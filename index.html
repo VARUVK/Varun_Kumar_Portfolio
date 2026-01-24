@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,265 +8,493 @@
     <!-- Load Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles and font import */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap');
-        
+        /* Modern Design System */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=JetBrains+Mono:wght@400;700&display=swap');
+
         :root {
             scroll-behavior: smooth;
         }
 
         body {
-            /* Use Inter for body text, apply subtle grid pattern for modern look */
-            font-family: 'Inter', sans-serif; 
-            background-image: radial-gradient(var(--card-dark) 1px, transparent 0); /* Using CSS variable for background dots */
+            font-family: 'Outfit', sans-serif;
+            background-color: #020617;
+            overflow-x: hidden;
+        }
+
+        /* Subtle background pattern */
+        .bg-grid {
+            background-image: radial-gradient(#1e293b 1px, transparent 0);
             background-size: 40px 40px;
         }
 
         .heading-font {
-             /* Use Montserrat for headings for a bolder, impressive look */
-            font-family: 'Montserrat', sans-serif; 
-            letter-spacing: -1px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
         }
-        
+
         .code-font {
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Custom scrollbar (Updated to match the new Light Grey accent) */
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
+
         ::-webkit-scrollbar-track {
-            background: var(--background-dark);
+            background: #020617;
         }
+
         ::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 4px;
-        }
-        
-        .section-padding {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
+            background: #334155;
+            border-radius: 10px;
         }
 
-        /* Keyframes for subtle floating animation (Used only on Hero) */
-        @keyframes subtleFloat {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-        .float-subtle {
-            animation: subtleFloat 5s ease-in-out infinite;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
-        /* Keyframes for neon glowing border on hover (Now using Light Grey/Silver accent) */
-        @keyframes neonGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(203, 213, 225, 0.4), 0 0 10px rgba(203, 213, 225, 0.2), 0 0 0 2px var(--card-dark) inset; }
-            50% { box-shadow: 0 0 15px rgba(203, 213, 225, 0.8), 0 0 30px rgba(241, 245, 249, 0.5), 0 0 0 2px var(--card-dark) inset; }
+        /* Glassmorphism */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .skill-card:hover {
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-            border-color: var(--accent-primary); /* Light Grey border on hover */
+        /* Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
-        
-        /* Ensure the hero heading text looks sharp using the new accents */
-        .hero-heading-text {
-            background-image: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
             -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
         }
 
-        /* --- Scroll Reveal Animations --- */
-        .fade-in-on-scroll {
+        /* Reveal animations */
+        .reveal {
             opacity: 0;
-            transform: translateY(30px); 
-            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .fade-in-on-scroll.is-visible {
+        .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
-        /* Staggered delay logic (applied by JS or directly below) */
-        .fade-in-on-scroll:nth-child(2) { transition-delay: 0.1s; }
-        .fade-in-on-scroll:nth-child(3) { transition-delay: 0.2s; }
-        .fade-in-on-scroll:nth-child(4) { transition-delay: 0.3s; }
-        .fade-in-on-scroll:nth-child(5) { transition-delay: 0.4s; }
-        .fade-in-on-scroll:nth-child(6) { transition-delay: 0.5s; }
+
+        /* Nav links hover */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: #38bdf8;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // New Dark Navy Blue / Light Grey Scheme
-                        'accent-primary': '#CBD5E1', // Light Grey/Silver (Main Accent)
-                        'accent-secondary': '#F1F5F9', // Almost White (Highlight/Hover)
-                        'background-dark': '#0D1321', // Dark Navy Blue (Primary Background)
-                        'card-dark': '#1A253A', // Slightly Lighter Navy (Card Background)
-                        'text-light': '#E2E8F0', // Off-white/light grey (Main Text)
+                        'primary': '#38bdf8',
+                        'secondary': '#818cf8',
+                        'dark': '#020617',
+                        'card': '#0f172a',
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-background-dark text-text-light">
 
-    <!-- Header & Navigation (Fixed to top) -->
-    <header class="sticky top-0 z-50 bg-background-dark/95 backdrop-blur-sm shadow-2xl border-b border-card-dark">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="#hero" class="text-2xl font-bold text-accent-primary hover:text-accent-secondary transition duration-300 heading-font">
+<body class="bg-dark text-slate-300 bg-grid">
+
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 w-full z-50 glass border-b border-white/5">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-xl font-bold tracking-tighter text-white flex items-center gap-2">
+                <span
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-dark text-xs font-black">VK</span>
                 VARUN KUMAR M
             </a>
 
             <!-- Desktop Nav Links -->
-            <div class="hidden md:flex space-x-8">
-                <a href="#about" class="nav-link text-lg font-medium hover:text-accent-primary transition duration-300">About</a>
-                <a href="#skills" class="nav-link text-lg font-medium hover:text-accent-primary transition duration-300">Skills</a>
-                <a href="#projects" class="nav-link text-lg font-medium hover:text-accent-primary transition duration-300">Projects</a>
-                <a href="#contact" class="nav-link text-lg font-medium hover:text-accent-primary transition duration-300">Contact</a>
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="#about" class="nav-link text-sm font-medium hover:text-white transition-colors">About</a>
+                <a href="#skills" class="nav-link text-sm font-medium hover:text-white transition-colors">Skills</a>
+                <a href="#projects" class="nav-link text-sm font-medium hover:text-white transition-colors">Projects</a>
+                <a href="#contact"
+                    class="nav-link text-sm font-medium hover:text-white transition-colors text-primary">Contact</a>
             </div>
 
             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden text-text-light hover:text-accent-primary transition duration-300 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <button id="mobile-menu-button" class="md:hidden text-white/70 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
             </button>
         </nav>
 
-        <!-- Mobile Menu (Hidden by Default) -->
-        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-background-dark/90">
-            <a href="#about" class="mobile-nav-link block text-lg font-medium hover:text-accent-primary transition duration-300 py-1">About</a>
-            <a href="#skills" class="mobile-nav-link block text-lg font-medium hover:text-accent-primary transition duration-300 py-1">Skills</a>
-            <a href="#projects" class="mobile-nav-link block text-lg font-medium hover:text-accent-primary transition duration-300 py-1">Projects</a>
-            <a href="#contact" class="mobile-nav-link block text-lg font-medium hover:text-accent-primary transition duration-300 py-1">Contact</a>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full left-0 w-full glass border-b border-white/5 p-6 space-y-4">
+            <a href="#about"
+                class="block text-lg font-medium hover:text-primary transition-colors mobile-nav-link">About</a>
+            <a href="#skills"
+                class="block text-lg font-medium hover:text-primary transition-colors mobile-nav-link">Skills</a>
+            <a href="#projects"
+                class="block text-lg font-medium hover:text-primary transition-colors mobile-nav-link">Projects</a>
+            <a href="#contact"
+                class="block text-lg font-medium hover:text-primary transition-colors mobile-nav-link text-primary">Contact</a>
         </div>
     </header>
 
     <main>
-        <!-- 1. Hero Section -->
-        <section id="hero" class="section-padding min-h-[90vh] flex items-center bg-background-dark relative overflow-hidden">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl z-10">
-                <p class="text-xl text-accent-primary mb-4 font-semibold float-subtle">Hello, I'm</p>
-                <h1 class="heading-font text-6xl sm:text-7xl lg:text-8xl font-black mb-6 leading-tight hero-heading-text float-subtle">
-                    VARUN KUMAR M
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+            <!-- Decorative background elements -->
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse">
+            </div>
+            <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-pulse"
+                style="animation-delay: 2s;"></div>
+
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <div class="reveal active" style="transition-delay: 0.1s;">
+                    <span
+                        class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-widest text-primary uppercase bg-primary/10 rounded-full border border-primary/20">
+                        Available for Opportunities
+                    </span>
+                </div>
+
+                <h1 class="reveal active text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-white"
+                    style="transition-delay: 0.2s;">
+                    Engineering the <br>
+                    <span class="text-gradient">Future of Agri-Tech</span>
                 </h1>
-                <h2 class="heading-font text-3xl sm:text-4xl text-text-light font-bold mb-8">
-                    B.Tech Agricultural Engineering Student | Developer
-                </h2>
-                <p class="text-lg sm:text-xl text-slate-400 mb-10 max-w-3xl mx-auto">
-                    Pre-final year student merging core engineering principles with practical full-stack development skills. Seeking <strong>part-time or work-from-home</strong> opportunities.
+
+                <p class="reveal active text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
+                    style="transition-delay: 0.3s;">
+                    I'm <span class="text-white font-medium">Varun Kumar M</span>, an Agricultural Engineering student
+                    and Developer from India, bridging the gap between core engineering and modern web technologies.
                 </p>
-                <a href="#contact" class="inline-block px-8 py-3 text-lg font-bold text-background-dark bg-accent-primary rounded-xl shadow-lg shadow-accent-primary/50 hover:bg-accent-secondary transform hover:scale-[1.02] transition duration-300 ease-in-out ring-2 ring-accent-primary">
-                    Contact Me
-                </a>
+
+                <div class="reveal active flex flex-col sm:flex-row items-center justify-center gap-4"
+                    style="transition-delay: 0.4s;">
+                    <a href="#contact"
+                        class="group relative px-8 py-4 bg-white text-dark font-bold rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <span class="relative z-10 group-hover:text-white transition-colors">Start a Conversation</span>
+                    </a>
+                    <a href="#projects"
+                        class="px-8 py-4 bg-card hover:bg-slate-800 text-white font-semibold rounded-2xl border border-white/5 transition-all hover:scale-105 active:scale-95">
+                        View My Work
+                    </a>
+                </div>
+
+                <div class="reveal active mt-20" style="transition-delay: 0.5s;">
+                    <div
+                        class="flex items-center justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                        <span class="text-xs font-bold tracking-widest uppercase">HTML5</span>
+                        <span class="text-xs font-bold tracking-widest uppercase">Tailwind</span>
+                        <span class="text-xs font-bold tracking-widest uppercase">JavaScript</span>
+                        <span class="text-xs font-bold tracking-widest uppercase">Java</span>
+                        <span class="text-xs font-bold tracking-widest uppercase">MySQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
             </div>
         </section>
 
-        <!-- 2. About Me Section -->
-        <section id="about" class="section-padding bg-card-dark/50 border-t border-b border-slate-700">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="heading-font text-4xl font-bold text-center mb-16 text-accent-primary fade-in-on-scroll">About Me</h2>
-                
-                <div class="flex flex-col lg:flex-row gap-12 items-center">
-                    <div class="lg:w-1/3 flex justify-center float-subtle fade-in-on-scroll">
-                        <img 
-                            src="https://placehold.co/300x300/1A253A/CBD5E1?text=VARUN+KUMAR+M" 
-                            alt="Placeholder professional profile picture" 
-                            class="w-64 h-64 object-cover rounded-full border-4 border-accent-secondary shadow-2xl shadow-accent-secondary/30 transition duration-500 hover:shadow-accent-primary/50"
-                        >
+        <!-- About Me Section -->
+        <section id="about" class="py-24 relative overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    <!-- Image Side -->
+                    <div class="lg:w-1/3 reveal" style="transition-delay: 0.1s;">
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                            </div>
+                            <div class="relative glass rounded-2xl p-2 overflow-hidden aspect-square">
+                                <img src="https://placehold.co/400x400/0f172a/38bdf8?text=Varun+Kumar"
+                                    alt="Varun Kumar M"
+                                    class="w-full h-full object-cover rounded-xl grayscale hover:grayscale-0 transition-all duration-700">
+                            </div>
+
+                            <!-- Stat badges -->
+                            <div
+                                class="absolute -bottom-6 -right-6 glass p-4 rounded-xl border border-white/10 hidden md:block">
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-tighter">B.Tech Agri
+                                    Engineering</p>
+                                <p class="text-white font-black">Pre-final Year</p>
+                            </div>
+                        </div>
                     </div>
-                    <!-- START: Shortened and Highlighted Content -->
-                    <div class="lg:w-2/3 text-lg space-y-6 text-slate-300 fade-in-on-scroll" style="transition-delay: 0.2s;">
-                        <p>
-                            My name is <strong class="text-accent-primary heading-font">Varun Kumar M</strong>. I am a pre-final year B.Tech Agricultural Engineering student who blends strong analytical skills from my discipline with a solid technical foundation in web and application development (HTML, CSS, JavaScript, Java, and MySQL). I have also deepened my expertise by completing an NPTEL course in Cloud Computing.
-                        </p>
-                        <p>
-                            I am actively looking for <strong>part-time or remote (work-from-home)</strong> development roles to gain practical experience. I am committed to delivering quality work within 24 hours of response time. I've completed several certifications from Coursera and similar platforms to deepen my technical knowledge.
-                        </p>
-                        <p class="font-semibold text-text-light">
-                            I am ready to contribute to your team! Check out my work below.
-                        </p>
+
+                    <!-- Text Side -->
+                    <div class="lg:w-2/3">
+                        <div class="reveal mb-8" style="transition-delay: 0.2s;">
+                            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">About Me</h2>
+                            <div class="w-20 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                        </div>
+
+                        <div class="space-y-6 text-slate-400 text-lg reveal" style="transition-delay: 0.3s;">
+                            <p>
+                                My name is <strong class="text-white font-semibold">Varun Kumar M</strong>. I am a
+                                pre-final year B.Tech Agricultural Engineering student who blends strong analytical
+                                skills from my discipline with a solid technical foundation in web and application
+                                development.
+                            </p>
+
+                            <p>
+                                My toolkit includes <span class="text-white">HTML, CSS, JavaScript, Java, and
+                                    MySQL</span>. I have also deepened my expertise by completing an NPTEL course in
+                                Cloud Computing, allowing me to understand distributed architectures and scalable
+                                solutions.
+                            </p>
+
+                            <p>
+                                I am actively looking for <span
+                                    class="text-primary font-medium underline decoration-primary/30 underline-offset-4">part-time
+                                    or remote development roles</span> to gain practical experience. I am committed to
+                                delivering quality work with a quick turnaround time.
+                            </p>
+
+                            <div class="pt-6 flex flex-wrap gap-4">
+                                <div class="glass px-6 py-4 rounded-2xl border border-white/5 flex-1 min-w-[200px]">
+                                    <p class="text-white font-bold mb-1">Quick Response</p>
+                                    <p class="text-sm">Guaranteed within 24 hours.</p>
+                                </div>
+                                <div class="glass px-6 py-4 rounded-2xl border border-white/5 flex-1 min-w-[200px]">
+                                    <p class="text-white font-bold mb-1">Certified</p>
+                                    <p class="text-sm">Coursera & NPTEL certified.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- END: Shortened and Highlighted Content -->
                 </div>
             </div>
         </section>
 
-        <!-- 3. Skills Section -->
-        <section id="skills" class="section-padding">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="heading-font text-4xl font-bold text-center mb-16 text-accent-primary fade-in-on-scroll">My Technical Toolkit</h2>
-                
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-                    <!-- Core Web Development -->
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-orange-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 22h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2zm1-15h14v2H5V7zm0 4h14v2H5v-2zm0 4h14v2H5v-2z"/></svg>
-                        <p class="font-semibold text-lg">HTML & CSS</p>
-                        <p class="text-sm text-slate-400">Core Basics</p>
-                    </div>
-                    
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-yellow-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 16H9V8h2v10zm4-4h-2V8h2v6z"/></svg>
-                        <p class="font-semibold text-lg">JavaScript</p>
-                        <p class="text-sm text-slate-400">Core Basics</p>
+        <!-- Skills Section -->
+        <section id="skills" class="py-24 bg-slate-900/30">
+            <div class="container mx-auto px-6">
+                <div class="reveal mb-16 text-center">
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-4">Technical Toolkit</h2>
+                    <p class="text-slate-400 max-w-xl mx-auto">A collection of technologies I use to build robust and
+                        scalable applications.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Category: Development -->
+                    <div class="reveal space-y-4" style="transition-delay: 0.1s;">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-primary/70 mb-6 px-1">Development
+                        </h3>
+                        <div class="space-y-3">
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-primary/20 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2L1 21h22L12 2zm0 3.83L19.17 19H4.83L12 5.83zM11 16h2v2h-2v-2zm0-7h2v5h-2V9z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">HTML & CSS</p>
+                                    <p class="text-xs text-slate-500">Foundation & Styling</p>
+                                </div>
+                            </div>
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-primary/20 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-400 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M3 3h18v18H3V3m14.5 14.5v-1h-1v1h1m-2-1v1h1v-1h-1m2-1v1h1v-1h-1m-1-1v1h1v-1h-1m2-1v1h1v-1h-1m-4-7v6h1.5v-6H12.5m2.5 0v6h1.5v-6H15.5m-3 0v6H14v-6h-1.5z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">JavaScript</p>
+                                    <p class="text-xs text-slate-500">Interactive Logic</p>
+                                </div>
+                            </div>
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-primary/20 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 7h2v5h-2V7zm0 6h2v2h-2v-2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">Java</p>
+                                    <p class="text-xs text-slate-500">Backend Systems</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Application Development -->
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-red-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 10H8v2h8v-2zm0 4H8v2h8v-2zM19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 16H7V5h10v14z"/></svg>
-                        <p class="font-semibold text-lg">Java</p>
-                        <p class="text-sm text-slate-400">Core Basics</p>
+                    <!-- Category: Data & Infrastructure -->
+                    <div class="reveal space-y-4" style="transition-delay: 0.2s;">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-secondary/70 mb-6 px-1">
+                            Infrastructure</h3>
+                        <div class="space-y-3">
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-secondary/20 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">MySQL</p>
+                                    <p class="text-xs text-slate-500">Structured Data</p>
+                                </div>
+                            </div>
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-secondary/20 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">Cloud Computing</p>
+                                    <p class="text-xs text-slate-500">Scalable Architecture</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Database & System -->
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-accent-secondary" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3C6.48 3 2 7.03 2 12s4.48 9 10 9 10-4.03 10-9-4.48-9-10-9zm0 16c-3.87 0-7-2.91-7-7s3.13-7 7-7 7 2.91 7 7-3.13 7-7 7zM11 7h2v5h-2V7zm0 6h2v2h-2v-2z"/></svg>
-                        <p class="font-semibold text-lg">MySQL</p>
-                        <p class="text-sm text-slate-400">Core Basics</p>
-                    </div>
-
-                    <!-- Specialized Skills -->
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-accent-primary" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        <p class="font-semibold text-lg">Cloud Computing</p>
-                        <p class="text-sm text-slate-400">NPTEL Course</p>
-                    </div>
-
-                    <!-- Learning & General -->
-                    <div class="skill-card p-4 text-center bg-card-dark rounded-xl shadow-xl transition duration-300 cursor-pointer border border-slate-700 fade-in-on-scroll">
-                        <svg class="w-10 h-10 mx-auto mb-2 text-slate-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM12 6v6l4 2-1 2-5-2V6h2z"/></svg>
-                        <p class="font-semibold text-lg">C / Python</p>
-                        <p class="text-sm text-slate-400">Less Experience</p>
+                    <!-- Category: Academic -->
+                    <div class="reveal space-y-4" style="transition-delay: 0.3s;">
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-6 px-1">Academic</h3>
+                        <div class="space-y-3">
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-white/10 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center text-slate-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2l-5.5 9h11L12 2zm0 14.5c-4.417 0-8 3.583-8 8h16c0-4.417-3.583-8-8-8z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">Python / C</p>
+                                    <p class="text-xs text-slate-500">Core Logic</p>
+                                </div>
+                            </div>
+                            <div
+                                class="glass p-4 rounded-2xl border border-white/5 flex items-center gap-4 hover:border-white/10 transition-colors group">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center text-slate-500 group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2L1 21h22L12 2zm0 3.83L19.17 19H4.83L12 5.83z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold">Agricultural Eng.</p>
+                                    <p class="text-xs text-slate-500">Professional Domain</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Projects Section -->
-        <section id="projects" class="section-padding bg-card-dark/50 border-t border-b border-slate-700">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="heading-font text-4xl font-bold text-center mb-16 text-accent-primary fade-in-on-scroll">Featured Projects</h2>
+        <!-- Projects Section -->
+        <section id="projects" class="py-24">
+            <div class="container mx-auto px-6">
+                <div class="reveal mb-16 text-center">
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-4">Featured Projects</h2>
+                    <p class="text-slate-400 max-w-xl mx-auto">Innovative solutions blending engineering principles with
+                        modern development.</p>
+                </div>
 
                 <div class="flex justify-center">
-
-                    <!-- Project Card: To-do List Application -->
-                    <div class="bg-card-dark rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-accent-secondary/70 group border border-slate-700 max-w-lg fade-in-on-scroll">
-                        <img src="https://placehold.co/600x400/1A253A/CBD5E1?text=To-Do+List+App" alt="To-Do List Application Screenshot" class="w-full h-56 object-cover group-hover:scale-[1.05] transition duration-500">
-                        <div class="p-6">
-                            <h3 class="heading-font text-2xl font-semibold mb-2 text-text-light group-hover:text-accent-primary transition">To-Do List Application</h3>
-                            <p class="text-slate-400 mb-4">A practical web application built to manage daily tasks, demonstrating proficiency in core front-end logic and state management.</p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="text-sm font-medium bg-accent-primary/20 text-accent-primary px-3 py-1 rounded-full">HTML</span>
-                                <span class="text-sm font-medium bg-accent-primary/20 text-accent-primary px-3 py-1 rounded-full">CSS</span>
-                                <span class="text-sm font-medium bg-accent-primary/20 text-accent-primary px-3 py-1 rounded-full">JavaScript</span>
+                    <!-- Project Card -->
+                    <div class="reveal group relative w-full max-w-2xl">
+                        <div
+                            class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000">
+                        </div>
+                        <div class="relative glass rounded-3xl overflow-hidden border border-white/5">
+                            <div class="aspect-video overflow-hidden">
+                                <img src="https://placehold.co/1200x800/0f172a/38bdf8?text=To-Do+List+Application"
+                                    alt="To-Do List Application"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                             </div>
-                            <div class="flex space-x-4">
-                                <a href="https://github.com/VARUVK" target="_blank" class="text-accent-primary hover:text-accent-secondary font-medium transition duration-300">View on GitHub &rarr;</a>
-                                <!-- Placeholder for Live Demo if available -->
-                                <a href="#" onclick="alert('Demo link not provided. Please update with your live project link!'); return false;" class="text-slate-400 hover:text-accent-primary transition duration-300">Live Demo (Placeholder)</a>
+                            <div class="p-8">
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <span
+                                        class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider rounded-full border border-primary/20">HTML</span>
+                                    <span
+                                        class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider rounded-full border border-primary/20">CSS</span>
+                                    <span
+                                        class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider rounded-full border border-primary/20">JS</span>
+                                </div>
+                                <h3 class="text-2xl font-black text-white mb-4">To-Do List Application</h3>
+                                <p class="text-slate-400 mb-8 leading-relaxed">
+                                    A high-performance task management application built to streamline daily workflows.
+                                    Demonstrates mastery in DOM manipulation, state persistence, and responsive UI
+                                    design.
+                                </p>
+                                <div class="flex items-center gap-6">
+                                    <a href="https://github.com/VARUVK" target="_blank"
+                                        class="flex items-center gap-2 text-white font-bold hover:text-primary transition-colors">
+                                        Source Code
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="#" onclick="alert('Demo coming soon!'); return false;"
+                                        class="text-slate-500 font-bold hover:text-white transition-colors">
+                                        Live Demo
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,169 +502,193 @@
             </div>
         </section>
 
-        <!-- 5. Contact Section -->
-        <section id="contact" class="section-padding bg-background-dark">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-                <h2 class="heading-font text-4xl font-bold text-center mb-6 text-accent-primary fade-in-on-scroll">Get In Touch</h2>
-                <p class="text-xl text-center text-slate-300 mb-12 fade-in-on-scroll" style="transition-delay: 0.1s;">I'm actively looking for remote/part-time opportunities. I guarantee a response within 24 hours!</p>
-                
-                <div class="grid md:grid-cols-2 gap-10">
-                    <!-- Contact Details Box -->
-                    <div class="bg-card-dark p-8 rounded-xl shadow-2xl border border-accent-secondary/50 space-y-6 hover:shadow-accent-primary/50 transition duration-300 fade-in-on-scroll" style="transition-delay: 0.2s;">
-                        <h3 class="heading-font text-2xl font-bold text-accent-secondary mb-4">Direct Contact Information</h3>
-                        
-                        <div class="flex items-center space-x-4">
-                            <!-- Email -->
-                            <svg class="w-6 h-6 text-accent-primary flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            <a href="mailto:varunkumarmvk2@gmail.com" class="text-lg hover:text-accent-primary transition duration-300">varunkumarmvk2@gmail.com</a>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <!-- Phone -->
-                            <svg class="w-6 h-6 text-accent-primary flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.03.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.2c.28-.29.36-.67.24-1.03C8.75 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.42 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
-                            <span class="text-lg">9790129989</span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <!-- LinkedIn -->
-                            <svg class="w-6 h-6 text-accent-primary flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zm-5 14h2v-5.5a2 2 0 0 0 2-2v-2h-3v4.5zm-4 0h2V9h-2v8zm-3-8h2v8H7V9zm-1-3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
-                            <a href="www.linkedin.com/in/varun-kumar-m" target="_blank" class="text-lg hover:text-accent-primary transition duration-300">LinkedIn Profile</a>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <!-- GitHub -->
-                            <svg class="w-6 h-6 text-accent-primary flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.087-.731.084-.67.084-.67 1.205.084 1.838 1.234 1.838 1.234 1.07 1.838 2.809 1.305 3.495.998.108-.77.418-1.305.762-1.604-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.524.118-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.003.404 2.293-1.552 3.301-1.23 3.301-1.23.653 1.652.242 2.873.118 3.176.766.84 1.236 1.911 1.236 3.221 0 4.609-2.802 5.621-5.474 5.922.429.367.818 1.092.818 2.203v3.259c0 .319.192.694.801.576C20.565 22.185 24 17.696 24 12 24 5.373 18.627 0 12 0z"/></svg>
-                            <a href="https://github.com/VARUVK" target="_blank" class="text-lg hover:text-accent-primary transition duration-300">github.com/VARUVK</a>
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <div class="reveal mb-16 text-center">
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-4">Get In Touch</h2>
+                    <p class="text-slate-400 max-w-xl mx-auto">Open for new opportunities and collaborations. Let's
+                        build something exceptional.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
+                    <!-- Info -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="reveal" style="transition-delay: 0.1s;">
+                            <h3 class="text-xl font-bold text-white mb-6">Contact Information</h3>
+                            <div class="space-y-6">
+                                <a href="mailto:varunkumarmvk2@gmail.com" class="flex items-center gap-4 group">
+                                    <div
+                                        class="w-12 h-12 glass rounded-xl flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors border border-white/5">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Email</p>
+                                        <p class="text-white">varunkumarmvk2@gmail.com</p>
+                                    </div>
+                                </a>
+                                <div class="flex items-center gap-4 group">
+                                    <div
+                                        class="w-12 h-12 glass rounded-xl flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors border border-white/5">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Phone</p>
+                                        <p class="text-white">+91 9790129989</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-8 pt-6">
+                                    <a href="https://www.linkedin.com/in/varun-kumar-m" target="_blank"
+                                        class="text-slate-500 hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                        </svg>
+                                    </a>
+                                    <a href="https://github.com/VARUVK" target="_blank"
+                                        class="text-slate-500 hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.087-.731.084-.67.084-.67 1.205.084 1.838 1.234 1.838 1.234 1.07 1.838 2.809 1.305 3.495.998.108-.77.418-1.305.762-1.604-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.524.118-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.003.404 2.293-1.552 3.301-1.23 3.301-1.23.653 1.652.242 2.873.118 3.176.766.84 1.236 1.911 1.236 3.221 0 4.609-2.802 5.621-5.474 5.922.429.367.818 1.092.818 2.203v3.259c0 .319.192.694.801.576C20.565 22.185 24 17.696 24 12 24 5.373 18.627 0 12 0z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Contact Form Box -->
-                    <form id="contact-form" class="space-y-6 bg-card-dark p-8 rounded-xl shadow-2xl border border-slate-700 fade-in-on-scroll" style="transition-delay: 0.3s;">
-                        <h3 class="heading-font text-2xl font-bold text-text-light mb-4">Send Me a Message</h3>
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-text-light mb-2">Name</label>
-                            <input type="text" id="name" name="name" required 
-                                   class="w-full px-4 py-3 bg-background-dark border border-slate-700 rounded-lg focus:ring-accent-primary focus:border-accent-primary placeholder-gray-500 text-text-light" 
-                                   placeholder="Your Name">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-text-light mb-2">Email</label>
-                            <input type="email" id="email" name="email" required 
-                                   class="w-full px-4 py-3 bg-background-dark border border-slate-700 rounded-lg focus:ring-accent-primary focus:border-accent-primary placeholder-gray-500 text-text-light" 
-                                   placeholder="you@example.com">
-                        </div>
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-text-light mb-2">Message</label>
-                            <textarea id="message" name="message" rows="4" required 
-                                      class="w-full px-4 py-3 bg-background-dark border border-slate-700 rounded-lg focus:ring-accent-primary focus:border-accent-primary placeholder-gray-500 text-text-light" 
-                                      placeholder="Tell me about the project or role."></textarea>
-                        </div>
-                        <button type="submit" 
-                                class="w-full px-6 py-3 text-lg font-bold text-background-dark bg-accent-primary rounded-xl shadow-lg shadow-accent-primary/50 hover:bg-accent-secondary transform hover:scale-[1.01] transition duration-300 ease-in-out">
-                            Send Message (24h Response)
-                        </button>
+                    <!-- Form -->
+                    <div class="lg:col-span-3 reveal" style="transition-delay: 0.1s;">
+                        <form id="contact-form"
+                            class="space-y-6 glass p-8 rounded-3xl border border-white/5 relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl">
+                            </div>
 
-                        <!-- Hidden Message Box for feedback (instead of alert) -->
-                        <div id="status-message" class="hidden mt-4 p-4 text-center rounded-lg bg-green-500/20 text-green-400 border border-green-500/50" role="alert">
-                            <!-- Content inserted by JS -->
-                        </div>
-                    </form>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name"
+                                        class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Full
+                                        Name</label>
+                                    <input type="text" id="name" name="name" required
+                                        class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-white placeholder-slate-600"
+                                        placeholder="John Doe">
+                                </div>
+                                <div>
+                                    <label for="email"
+                                        class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Email
+                                        Address</label>
+                                    <input type="email" id="email" name="email" required
+                                        class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-white placeholder-slate-600"
+                                        placeholder="john@example.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="message"
+                                    class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Your
+                                    Message</label>
+                                <textarea id="message" name="message" rows="5" required
+                                    class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-white placeholder-slate-600 resize-none"
+                                    placeholder="Tell me about your project..."></textarea>
+                            </div>
+                            <button type="submit" id="submit-btn"
+                                class="w-full py-5 bg-white text-dark font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-3 group">
+                                <span>Send Message</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </button>
+                            <div id="status-message" class="hidden mt-4 p-4 text-center rounded-2xl border"></div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- Footer -->
-    <footer class="bg-card-dark py-6 border-t border-slate-800 mt-10">
-        <div class="container mx-auto px-4 text-center text-slate-400">
-            <p>&copy; 2025 Varun Kumar M Portfolio. All rights reserved.</p>
-            <p class="text-sm mt-2">Designed and Developed with HTML, Tailwind CSS, and JavaScript.</p>
+    <footer class="py-12 border-t border-white/5">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm mb-2">&copy; 2026 Varun Kumar M. All rights reserved.</p>
+            <p class="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">Crafted with Passion & Precision
+            </p>
         </div>
     </footer>
 
-    <!-- JavaScript for Interactivity and Scroll Reveal -->
+    <!-- JavaScript -->
     <script>
-        // 1. Mobile Menu Toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        // Reveal on scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        window.addEventListener("load", reveal);
+
+        // Mobile Menu
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
 
-        // 2. Smooth Scrolling and Mobile Menu Closing
-        document.querySelectorAll('.nav-link, .mobile-nav-link, a[href^="#"]').forEach(anchor => {
+        // Form Submission
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status-message');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-pulse">Processing...</span>';
+
+            setTimeout(() => {
+                status.textContent = 'Message sent! I will get back to you within 24 hours.';
+                status.className = 'mt-4 p-4 text-center rounded-2xl border border-green-500/50 bg-green-500/10 text-green-400';
+                status.classList.remove('hidden');
+                btn.innerHTML = '<span>Message Sent</span>';
+                this.reset();
+
+                setTimeout(() => {
+                    status.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Send Message</span><svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>';
+                }, 5000);
+            }, 1500);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href.startsWith('#') && href.length > 1) {
-                    e.preventDefault();
-                    document.querySelector(href).scrollIntoView({
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
                         behavior: 'smooth'
                     });
                 }
-                
-                // Hide mobile menu after clicking a link
-                if (this.classList.contains('mobile-nav-link')) {
-                    document.getElementById('mobile-menu').classList.add('hidden');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
                 }
             });
-        });
-
-        // 3. Simple Form Submission Handling (Non-functional, but provides user feedback)
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const statusMessage = document.getElementById('status-message');
-            
-            // Disable button and show loading state
-            submitButton.textContent = 'Sending...';
-            submitButton.disabled = true;
-            statusMessage.classList.add('hidden');
-
-            // Simulate an API call delay (2 seconds)
-            setTimeout(() => {
-                // Show success message
-                statusMessage.textContent = 'Thank you! Your message has been simulated as sent. Varun will respond within 24 hours.';
-                statusMessage.classList.remove('hidden');
-                statusMessage.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/50');
-                statusMessage.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/50');
-
-                // Reset form and button
-                // form.reset(); // Commenting out to let the user see what they typed, reset if needed.
-                submitButton.textContent = 'Send Message (24h Response)';
-                submitButton.disabled = false;
-                
-                // Automatically hide message after 5 seconds
-                setTimeout(() => {
-                    statusMessage.classList.add('hidden');
-                }, 7000);
-
-            }, 2000); 
-        });
-
-        // 4. Scroll Reveal Logic using Intersection Observer
-        const observerOptions = {
-            root: null, // viewport
-            rootMargin: '0px',
-            threshold: 0.1 // 10% of element visible
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Add the visible class
-                    entry.target.classList.add('is-visible');
-                    // Stop observing once visible
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Target all elements that should fade in
-        document.querySelectorAll('.fade-in-on-scroll').forEach(el => {
-            observer.observe(el);
         });
     </script>
 </body>
+
 </html>
